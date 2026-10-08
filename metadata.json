@@ -1,0 +1,6 @@
+{
+  "name": "Mi devocionario",
+  "description": "Mi devocionario: Eleva tu alma al cielo. Santo Rosario, Coronilla de la Misericordia, Vía Crucis, Vía Lúcis, Liturgia de las Horas, lecturas CEM y horario de oración.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
