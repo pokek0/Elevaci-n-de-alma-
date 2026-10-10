@@ -351,10 +351,22 @@ class RosaryViewModel(application: Application) : AndroidViewModel(application) 
             _uiState.update {
                 it.copy(
                     currentMysteryIndex = currentIdx - 1,
-                    aveMariaCount = 10
+                    aveMariaCount = 0
                 )
             }
+            triggerHaptic(isCompletion = false)
         }
+    }
+
+    fun setMysteryIndex(index: Int) {
+        val clamped = index.coerceIn(0, 4)
+        _uiState.update {
+            it.copy(
+                currentMysteryIndex = clamped,
+                aveMariaCount = 0
+            )
+        }
+        triggerHaptic(isCompletion = false)
     }
 
     fun restart() {

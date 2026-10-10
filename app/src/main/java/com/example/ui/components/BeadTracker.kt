@@ -101,7 +101,7 @@ fun BeadTracker(
                         letterSpacing = 1.2.sp
                     )
                     Text(
-                        text = if (count == 10) "¡Decena completada!" else "Navega entre las cuentas y oraciones",
+                        text = if (count == 10) "¡Decena completada! Gloria y Jaculatoria" else "Toca las cuentas circulares o el botón para rezar",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -273,7 +273,7 @@ fun BeadTracker(
                     )
                 } else {
                     Text(
-                        text = "Rezar cuenta actual  •  Avemaría ${count + 1}/10",
+                        text = "Rezar Avemaría  •  Cuenta ${count + 1} de 10",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
@@ -297,7 +297,7 @@ private fun BeadItem(
     onClick: () -> Unit
 ) {
     val scale by animateFloatAsState(
-        targetValue = if (isCompleted) 1.08f else if (isCurrent) 1.12f else 1.0f,
+        targetValue = if (isCompleted) 1.08f else if (isCurrent) 1.15f else 1.0f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
         label = "bead_scale"
     )
@@ -325,7 +325,7 @@ private fun BeadItem(
     Box(
         modifier = Modifier
             .scale(scale)
-            .size(46.dp)
+            .size(48.dp)
             .shadow(
                 elevation = if (isCurrent) 6.dp else if (isCompleted) 3.dp else 1.dp,
                 shape = CircleShape

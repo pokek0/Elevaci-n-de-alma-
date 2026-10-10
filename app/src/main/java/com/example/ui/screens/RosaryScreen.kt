@@ -27,6 +27,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CheckCircle
@@ -132,7 +133,8 @@ fun RosaryScreen(
                             onCountAveMaria = { viewModel.countAveMaria() },
                             onSelectBead = { viewModel.setAveMariaCount(it) },
                             onNextMystery = { viewModel.nextMystery() },
-                            onPrevMystery = { viewModel.prevMystery() }
+                            onPrevMystery = { viewModel.prevMystery() },
+                            onSelectMysteryIndex = { viewModel.setMysteryIndex(it) }
                         )
                     }
                 }
@@ -543,13 +545,109 @@ private fun Step2MysteriesAndDecadeView(
     onCountAveMaria: () -> Unit,
     onSelectBead: (Int) -> Unit,
     onNextMystery: () -> Unit,
-    onPrevMystery: () -> Unit
+    onPrevMystery: () -> Unit,
+    onSelectMysteryIndex: (Int) -> Unit
 ) {
     val items = PrayersData.mysteries[mysteryType] ?: emptyList()
     val currentMystery = items.getOrNull(mysteryIndex) ?: items.first()
     var showAveMariaText by remember { mutableStateOf(true) }
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        // Dedicated Mystery Navigation Controls
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("mystery_navigation_bar"),
+            shape = RoundedCornerShape(22.dp),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
+            shadowElevation = 2.dp
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = onPrevMystery,
+                        enabled = mysteryIndex > 0,
+                        shape = RoundedCornerShape(12.dp),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                        modifier = Modifier.testTag("prev_mystery_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Misterio Anterior",
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Anterior", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                    }
+
+                    Text(
+                        text = "Misterio ${mysteryIndex + 1} de 5",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    OutlinedButton(
+                        onClick = onNextMystery,
+                        enabled = mysteryIndex < 4,
+                        shape = RoundedCornerShape(12.dp),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                        modifier = Modifier.testTag("next_mystery_nav_button")
+                    ) {
+                        Text("Siguiente", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = "Siguiente Misterio",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+
+                // Mystery direct selectors 1..5
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    for (i in 0..4) {
+                        val isSelected = i == mysteryIndex
+                        Surface(
+                            shape = CircleShape,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                            border = BorderStroke(
+                                width = if (isSelected) 2.dp else 1.dp,
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                            ),
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clickable { onSelectMysteryIndex(i) }
+                                .testTag("mystery_selector_chip_$i")
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = "${i + 1}",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 13.sp,
+                                    color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Mystery Badge & Title Card
         Card(
             modifier = Modifier.fillMaxWidth(),
